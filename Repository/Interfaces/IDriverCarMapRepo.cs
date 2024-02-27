@@ -7,7 +7,14 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface IDriverCarMapRepo : IBaseRepo<DriverCarMap>
+    public interface IDriverCarMapRepo
     {
+        public Task<DriverCarMap> Create(int driverId, string carRegNum);
+
+        public Task<IEnumerable<DriverCarMap>> GetAll();
+
+        public Task<DriverCarMap> GetById(int id);
+
+        public Task Delete(int driverId, string carRegNum);
     }
 }

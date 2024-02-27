@@ -26,5 +26,16 @@
             }
             return null;
         }
+
+        public static int GetAge(DateOnly birthDate)
+        {
+            DateTime n = DateTime.Now;
+            int age = n.Year - birthDate.Year;
+
+            if (n.Month < birthDate.Month || (n.Month == birthDate.Month && n.Day < birthDate.Day))
+                age--;
+
+            return age;
+        }
     }
 }

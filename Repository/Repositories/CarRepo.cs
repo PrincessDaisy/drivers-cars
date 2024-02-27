@@ -93,5 +93,25 @@ namespace Repository.Repositories
                 throw;
             }
         }
+
+        public async Task DeleteAll()
+        {
+            try
+            {
+                foreach (var item in _dbContext.Cars)
+                {
+                    _dbContext.Cars.Remove(item);
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
     }
 }

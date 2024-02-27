@@ -65,7 +65,14 @@ namespace Repository.Repositories
         {
             try
             {
-                _dbContext.Entry(model).State = EntityState.Modified;
+                var driver = _dbContext.Drivers.SingleOrDefault(d => d.Id == model.Id);
+
+                driver.FirstName = model.FirstName;
+                driver.Surname = model.Surname;
+                driver.MiddleName = model.MiddleName;
+                driver.BirthDate = model.BirthDate;
+
+                //_dbContext.Update(model);
 
                 await _dbContext.SaveChangesAsync();
 

@@ -46,5 +46,12 @@ namespace drivers_cars.Services
 
             return true;
         }
+
+        public async Task<bool> DeleteAll()
+        {
+            await _repo.DeleteAll();
+
+            return true;
+        }
     }
 }

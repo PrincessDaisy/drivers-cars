@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Repository.Data
 {
@@ -18,7 +19,7 @@ namespace Repository.Data
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -31,9 +32,13 @@ namespace Repository.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Driver>()
+                .Property(d => d.Id).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+            modelBuilder.Entity<Driver>()
                 .HasAlternateKey("FirstName", "Surname", "MiddleName", "BirthDate");
             modelBuilder.Entity<Car>()
                 .HasAlternateKey(c => c.RegistrationNumber);
+            modelBuilder.Entity<DriverCarMap>()
+                .HasAlternateKey("DriverId", "CarId");
         }
     }
 }

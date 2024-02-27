@@ -9,5 +9,6 @@ namespace Repository.Interfaces
 {
     public interface ICarRepo : IBaseRepo<Car>
     {
+        public Task DeleteAll();
     }
 }
