@@ -8,6 +8,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Repository.Data
 {
@@ -35,6 +36,8 @@ namespace Repository.Data
                 .Property(d => d.Id).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
             modelBuilder.Entity<Driver>()
                 .HasAlternateKey("FirstName", "Surname", "MiddleName", "BirthDate");
+            modelBuilder.Entity<Car>()
+                .Property(d => d.Id).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
             modelBuilder.Entity<Car>()
                 .HasAlternateKey(c => c.RegistrationNumber);
             modelBuilder.Entity<DriverCarMap>()

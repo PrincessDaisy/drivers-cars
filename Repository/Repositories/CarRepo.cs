@@ -26,6 +26,11 @@ namespace Repository.Repositories
 
                 return driver.Entity;
             }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
@@ -81,11 +86,22 @@ namespace Repository.Repositories
         {
             try
             {
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+                var map = await _dbContext.DriverCarMaps.Where(d => d.Id == model.Id).ToListAsync();
+
+                foreach (var item in map)
+                {
+                    _dbContext.DriverCarMaps.Remove(item);
+                }
+
                 _dbContext.Cars.Remove(model);
 
                 await _dbContext.SaveChangesAsync();
 
+                await transaction.CommitAsync();
+
                 return;
+
             }
             catch (Exception ex)
             {
@@ -98,12 +114,18 @@ namespace Repository.Repositories
         {
             try
             {
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
                 foreach (var item in _dbContext.Cars)
                 {
                     _dbContext.Cars.Remove(item);
                 }
-
+                foreach (var item in _dbContext.DriverCarMaps)
+                {
+                    _dbContext.DriverCarMaps.Remove(item);
+                }
                 await _dbContext.SaveChangesAsync();
+
+                await transaction.CommitAsync();
 
                 return;
             }

@@ -18,6 +18,8 @@ namespace drivers_cars.Services
 
         public async Task<bool> Update(CarDTO dto)
         {
+            var checkExist = await _repo.GetById(dto.Id) ?? throw new KeyNotFoundException($"Car with registration number {dto.RegistrationNumber} not found");
+
             var car = Helpers.Helpers.MapObjects<CarDTO, Car>(dto);
 
             await _repo.Update(car);

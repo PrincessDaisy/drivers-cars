@@ -17,8 +17,12 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
 });
 
-builder.Services.AddDbContext<DataContext>(options => 
-    options.UseSqlServer("Server=DEV-PC004\\SQLEXPRESS;Database=test;Trusted_Connection=True;TrustServerCertificate=True;"));
+var configBuilder = new ConfigurationBuilder();
+configBuilder.AddJsonFile("appsettings.json");
+var configuration = configBuilder.Build();
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DataBase")));
 builder.Services.AddTransient<ICarRepo, CarRepo>();
 builder.Services.AddTransient<CarsService>();
 builder.Services.AddTransient<IDriverRepo, DriverRepo>();

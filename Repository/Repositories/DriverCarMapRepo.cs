@@ -30,7 +30,7 @@ namespace Repository.Repositories
 
                 if (checkExist != null)
                 {
-                    throw new SqlAlreadyFilledException("This map already");
+                    throw new SqlAlreadyFilledException("This map already exist");
                 }
 
                 DriverCarMap entity = new()

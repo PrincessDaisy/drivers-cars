@@ -27,6 +27,11 @@ namespace Repository.Repositories
 
                 return driver.Entity;
             }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
@@ -67,12 +72,7 @@ namespace Repository.Repositories
             {
                 var driver = _dbContext.Drivers.SingleOrDefault(d => d.Id == model.Id);
 
-                driver.FirstName = model.FirstName;
-                driver.Surname = model.Surname;
-                driver.MiddleName = model.MiddleName;
-                driver.BirthDate = model.BirthDate;
-
-                //_dbContext.Update(model);
+                _dbContext.Update(model);
 
                 await _dbContext.SaveChangesAsync();
 

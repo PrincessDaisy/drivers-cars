@@ -1,13 +1,14 @@
 using drivers_cars.DTO;
 using drivers_cars.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Mime;
 
 namespace drivers_cars.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("drivers")]
     public class DriversController : ControllerBase
     {
         private readonly ILogger<DriversController> _logger;
@@ -27,6 +28,11 @@ namespace drivers_cars.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "Получение всех водителей",
+            Description = "Метод обеспечивающий получение всех записей из таблице Drivers",
+            OperationId = "cars/get-all"
+        )]
         public async Task<IEnumerable<DriverDTO>> GetAll()
         {
             try
@@ -48,13 +54,22 @@ namespace drivers_cars.Controllers
         [HttpPost("create")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status208AlreadyReported)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        
+        [SwaggerOperation(
+            Summary = "Создание водителя",
+            Description = "Метод обеспечивающий создание записи в таблице Drivers",
+            OperationId = "cars/create"
+        )]
         public async Task<ActionResult> Create([FromBody] DriverDTO request)
         {
             try
             {
                 return Ok(await _service.Create(request));
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(208, $"Driver already exist");
             }
             catch (Exception)
             {
@@ -71,11 +86,28 @@ namespace drivers_cars.Controllers
         [HttpDelete("delete")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
-        public async Task Delete(int id)
+        [SwaggerOperation(
+            Summary = "Удаление водителя",
+            Description = "Метод обеспечивающий удаление записи в таблице Drivers",
+            OperationId = "cars/delete"
+        )]
+        public async Task<ActionResult> Delete(int id)
         {
-            await _service.Delete(id);
+            try
+            {
+                await _service.Delete(id);
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Something went wrong");
+            }
         }
 
     }

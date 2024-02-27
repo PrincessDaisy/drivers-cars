@@ -18,6 +18,8 @@ namespace drivers_cars.Services
 
         public async Task<bool> Update(DriverDTO dto)
         {
+            var checkExist = await _repo.GetById(dto.Id) ?? throw new KeyNotFoundException($"Driver not found");
+
             var driver = Helpers.Helpers.MapObjects<DriverDTO, Driver>(dto);
 
             await _repo.Update(driver);
@@ -41,7 +43,7 @@ namespace drivers_cars.Services
 
         public async Task<bool> Delete(int id)
         {
-            var item = await _repo.GetById(id) ?? throw new KeyNotFoundException($"Item with ID = {id} not found");
+            var item = await _repo.GetById(id) ?? throw new KeyNotFoundException($"Driver not found");
             await _repo.Delete(item);
 
             return true;
